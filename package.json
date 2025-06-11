@@ -1,0 +1,19 @@
+{
+  "name": "green-delivery-platform",
+  "version": "1.0.0",
+  "description": "Green package delivery platform with Vue.js and Node.js",
+  "main": "server/app.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && node app.js",
+    "client": "cd client && npm run dev",
+    "install-all": "npm install && cd server && npm install && cd ../client && npm install"
+  },
+  "dependencies": {
+    "concurrently": "^7.6.0"
+  },
+  "devDependencies": {},
+  "keywords": ["delivery", "vue", "nodejs", "express", "green"],
+  "author": "Green Delivery Team",
+  "license": "MIT"
+}
