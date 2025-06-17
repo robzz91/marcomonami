@@ -4,15 +4,10 @@ Technologies utilisées
 
 Frontend :
 - Vue.js 
-- Tailwind CSS
 
 
 Backend :
-- Node.js
-- Express.js
-- MySQL
-- JWT (authentification)
-- bcryptjs (hashage des mots de passe)
+Vue.js
 
 Installation
 
