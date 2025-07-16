@@ -212,6 +212,7 @@ CREATE TABLE `annonces` (
   `frais_service` DECIMAL(10,2) NULL,
   `prix_total` DECIMAL(10,2) NULL,
   `statut` ENUM('draft', 'publiee', 'en_cours', 'terminee', 'annulee') DEFAULT 'draft',
+  `nombre_vues` INT DEFAULT 0,
   `prioritaire` BOOLEAN DEFAULT FALSE,
   `date_publication` DATETIME NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -417,13 +418,18 @@ CREATE TABLE `messages` (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
   `expediteur_id` INT NOT NULL,
   `destinataire_id` INT NOT NULL,
+  `annonce_id` INT NULL,
   `sujet` VARCHAR(255) NULL,
   `contenu` TEXT NOT NULL,
   `lu` BOOLEAN DEFAULT FALSE,
   `date_lecture` DATETIME NULL,
+  `date_envoi` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `supprime_expediteur` BOOLEAN DEFAULT FALSE,
+  `supprime_destinataire` BOOLEAN DEFAULT FALSE,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (`expediteur_id`) REFERENCES `utilisateurs` (`id`),
-  FOREIGN KEY (`destinataire_id`) REFERENCES `utilisateurs` (`id`)
+  FOREIGN KEY (`destinataire_id`) REFERENCES `utilisateurs` (`id`),
+  FOREIGN KEY (`annonce_id`) REFERENCES `annonces` (`id`)
 )
 
 

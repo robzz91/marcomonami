@@ -1,76 +1,169 @@
-EcoDeli
+# 🌱 EcoDeli - Plateforme de Livraison Écologique
 
-Technologies utilisées
+EcoDeli est une plateforme complète de livraison écologique qui connecte livreurs, commerçants, clients et prestataires dans un écosystème durable.
 
-Frontend :
-- Vue.js 
+## 🎯 Fonctionnalités
 
+### 👥 5 Espaces Utilisateur
+- **Client** : Recherche et réservation de services
+- **Livreur** : Gestion des trajets et livraisons écologiques
+- **Commerçant** : Gestion des contrats et annonces
+- **Prestataire** : Gestion des services et disponibilités
+- **Administrateur** : Modération et gestion de la plateforme
 
-Backend :
-Vue.js
+### 🛡️ Interface d'Administration Dédiée
+- Gestion complète des utilisateurs
+- Tableaux de bord avec statistiques temps réel
+- Modération et validation de contenu
+- Rapports et analyses détaillées
 
-Installation
+## 🏗️ Technologies Utilisées
 
-Prérequis :
-- Node.js
-- MySQL
-- npm ou yarn
+### Frontend Utilisateur (Port 5173)
+- **Vue.js 3** avec Composition API
+- **Vite** comme bundler
+- **Tailwind CSS** pour le design
+- **Pinia** pour la gestion d'état
+- **Vue Router** avec guards d'authentification
+- **Axios** pour les appels API
 
-1. Cloner le projet
+### Interface Admin (Port 5174)
+- **Vue.js 3** avec interface dédiée
+- **Chart.js** pour les graphiques
+- **Design system admin** professionnel
+- **Authentification sécurisée** pour admins uniquement
 
-git clone https://github.com/robzz91/PA_2A
+### Backend API (Port 3000)
+- **Node.js** avec **Express.js**
+- **MySQL** avec modèles de données complets
+- **JWT** pour l'authentification
+- **bcrypt** pour le hashage des mots de passe
+- **Architecture MVC** avec middleware
 
-### 2. Installer les dépendances
+## 🚀 Installation Rapide
 
+### 1. Installer les dépendances
+```bash
 npm run install-all
+```
 
+### 2. Configurer la base de données
+```bash
+# Créer la base de données
+CREATE DATABASE ecodeli;
 
-### 3. Configuration de la base de données
-1. Créer une base de données MySQL nommée `ecodeli`
-2. Exécuter les scripts SQL dans l'ordre :
-   - `scripts/01-create-database.sql`
-   - `scripts/02-seed-data.sql`
+# Importer le schéma
+mysql -u root -p ecodeli < bdd.sql
+```
 
-### 4. Configuration de l'environnement
-1. Copier le fichier `.env.example` vers `.env` dans le dossier `server/`
-2. Modifier les variables d'environnement selon votre configuration :
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=root
-DB_NAME=ecodeli
-PORT=3306
+### 3. Configuration
+```bash
+# Copier et configurer le fichier .env
+cp api/.env.example api/.env
+# Modifier api/.env avec vos paramètres MySQL
+```
 
-### 5. Lancer l'application
-Lancer le serveur et le client simultanément
+### 4. Démarrer l'application
+```bash
+# Démarre tout : API + Frontend + Admin
 npm run dev
+```
 
-Ou lancer séparément :
-Terminal 1 - Backend
-npm run server
+## 🌐 Accès aux Applications
 
-Terminal 2 - Frontend
-npm run client
+| Application | Port | URL | Description |
+|------------|------|-----|-------------|
+| **Frontend Utilisateur** | 5173 | http://localhost:5173 | Interface pour tous les utilisateurs |
+| **Interface Admin** | 5174 | http://localhost:5174 | Panneau d'administration |
+| **API Backend** | 3000 | http://localhost:3000 | API REST |
 
-L'application sera accessible sur :
-- Frontend : http://localhost:5173
-- Backend API : http://localhost:3000
-Structure du projet
+## 📁 Structure du Projet
 
-green-delivery-platform/
-├── server/                 # Backend Node.js/Express
-│   ├── app.js             # Point d'entrée du serveur
-│   ├── package.json       # Dépendances backend
-│   └── .env               # Variables d'environnement
-├── client/                # Frontend Vue.js
-│   ├── src/
-│   │   ├── App.vue        # Composant principal
-│   │   ├── main.js        # Point d'entrée Vue
-│   │   └── style.css      # Styles Tailwind
-│   ├── index.html         # Template HTML
-│   ├── package.json       # Dépendances frontend
-│   ├── vite.config.js     # Configuration Vite
-│   └── tailwind.config.js # Configuration Tailwind
-├── scripts/               # Scripts SQL
-│   ├── 01-create-database.sql
-│   └── 02-seed-data.sql
-└── README.md
+```
+EcoDeli/
+├── 📁 api/                 # Backend Express.js
+│   ├── controllers/        # Logique métier par rôle
+│   ├── models/            # Modèles de données
+│   ├── routes/            # Routes API organisées
+│   ├── middleware/        # Auth, validation, CORS
+│   └── .env              # Configuration
+├── 📁 frontend/           # Interface Utilisateur Vue.js
+│   ├── src/views/         # Pages par rôle utilisateur
+│   ├── src/components/    # Composants réutilisables
+│   ├── src/stores/       # Stores Pinia
+│   └── src/layouts/      # Layouts avec navigation
+├── 📁 backend/            # Interface Admin Vue.js
+│   ├── src/views/         # Pages d'administration
+│   ├── src/components/    # Composants admin spécialisés
+│   └── src/stores/       # Stores admin sécurisés
+├── 📄 bdd.sql            # Schéma complet (30+ tables)
+├── 📄 GUIDE_DEMARRAGE.md # Guide détaillé
+└── 📄 CLAUDE.md          # Documentation technique
+```
+
+## 🎮 Scripts Disponibles
+
+```bash
+# Démarrage
+npm run dev              # Tout démarrer
+npm run dev-frontend     # API + Frontend utilisateur
+npm run dev-server       # API seulement
+npm run dev-client       # Frontend seulement
+npm run dev-admin        # Interface admin seulement
+
+# Installation
+npm run install-all      # Installer toutes les dépendances
+npm run install-server   # API seulement
+npm run install-client   # Frontend seulement
+npm run install-admin    # Interface admin seulement
+```
+
+## 🔑 Comptes de Test
+
+### Utilisateurs (Frontend)
+- **Client** : client@ecodeli.com / password123
+- **Livreur** : livreur@ecodeli.com / password123
+- **Commerçant** : commercant@ecodeli.com / password123
+- **Prestataire** : prestataire@ecodeli.com / password123
+
+### Administrateur (Interface Admin)
+- **Admin** : admin@ecodeli.com / admin123
+
+## 🎨 Design
+
+- **Thème Écologique** : Palette verte pour le frontend utilisateur
+- **Interface Admin** : Design professionnel avec palette grise/bleue
+- **Responsive** : Compatible mobile et desktop
+- **UX Optimisée** : Navigation intuitive et feedback utilisateur
+
+## 🔒 Sécurité
+
+- **Authentification JWT** avec refresh tokens
+- **Validation** des données côté client et serveur
+- **Protection CORS** configurée
+- **Hashage bcrypt** pour les mots de passe
+- **Guards de navigation** basés sur les rôles
+- **Interface admin sécurisée** avec authentification dédiée
+
+## 📊 Base de Données
+
+Le schéma inclut **30+ tables** couvrant :
+- Gestion complète des utilisateurs et rôles
+- Système de livraisons et trajets
+- Gestion des services et prestations
+- Système de messaging et notifications
+- Facturation et paiements
+- Évaluations et commentaires
+
+## 🆘 Support
+
+Consultez le **GUIDE_DEMARRAGE.md** pour des instructions détaillées.
+
+En cas de problème :
+1. Vérifiez que MySQL est démarré
+2. Assurez-vous que les ports 3000, 5173 et 5174 sont libres
+3. Relancez `npm run install-all` si nécessaire
+
+---
+
+**EcoDeli - Pour un avenir plus vert ! 🌱🚚**

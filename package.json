@@ -4,10 +4,20 @@
   "description": "Green package delivery platform with Vue.js and Node.js",
   "main": "server/app.js",
   "scripts": {
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "server": "cd server && node app.js",
-    "client": "cd client && npm run dev",
-    "install-all": "npm install && cd server && npm install && cd ../client && npm install"
+    "dev": "concurrently --kill-others-on-fail \"npm run dev-server\" \"npm run dev-client\" \"npm run dev-admin\"",
+    "dev-full": "concurrently --kill-others-on-fail \"npm run dev-server\" \"npm run dev-client\" \"npm run dev-admin\"",
+    "dev-frontend": "concurrently --kill-others-on-fail \"npm run dev-server\" \"npm run dev-client\"",
+    "start": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\" \"npm run admin\"",
+    "server": "cd api && npm start",
+    "dev-server": "cd api && npm run dev",
+    "client": "cd frontend && npm run dev",
+    "dev-client": "cd frontend && npm run dev",
+    "admin": "cd backend && npm run dev",
+    "dev-admin": "cd backend && npm run dev",
+    "install-all": "npm install && cd api && npm install && cd ../frontend && npm install && cd ../backend && npm install",
+    "install-server": "cd api && npm install",
+    "install-client": "cd frontend && npm install",
+    "install-admin": "cd backend && npm install"
   },
   "dependencies": {
     "concurrently": "^7.6.0"

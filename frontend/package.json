@@ -1,18 +1,33 @@
 {
-  "name": "frontend",
+  "name": "ecodeli-frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.0.0",
   "type": "module",
+  "description": "Frontend Vue.js pour la plateforme de livraison écologique EcoDeli",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 5173",
+    "dev-local": "vite --port 5173 --host localhost",
+    "dev-simple": "vite --port 5173",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview --port 5173 --host 0.0.0.0",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
-    "vue": "^3.5.13"
+    "vue": "^3.5.13",
+    "vue-router": "^4.2.5",
+    "pinia": "^2.1.7",
+    "axios": "^1.6.2",
+    "@headlessui/vue": "^1.7.16",
+    "@heroicons/vue": "^2.0.18",
+    "vue-toastification": "^2.0.0-rc.5",
+    "@vueuse/core": "^10.5.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.3",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "tailwindcss": "^3.3.6",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "@tailwindcss/forms": "^0.5.7"
   }
 }

@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  # Base de données MySQL
+  mysql:
+    image: mysql:8.0
+    container_name: ecodeli-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ecodeli_root_password
+      MYSQL_DATABASE: ecodeli
+      MYSQL_USER: ecodeli_user
+      MYSQL_PASSWORD: ecodeli_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./bdd.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - ecodeli-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # API Backend
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: ecodeli-api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=mysql
+      - DB_USER=ecodeli_user
+      - DB_PASSWORD=ecodeli_password
+      - DB_NAME=ecodeli
+      - DB_PORT=3306
+      - JWT_SECRET=your_very_long_and_secure_jwt_secret_key_here
+      - JWT_EXPIRES_IN=24h
+      - SESSION_SECRET=your_very_long_and_secure_session_secret_key_here
+      - PORT=3000
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - ecodeli-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/test-db"]
+      timeout: 10s
+      retries: 5
+
+  # Frontend Utilisateur
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ecodeli-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - ecodeli-network
+
+  # Interface Admin
+  admin:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ecodeli-admin
+    restart: unless-stopped
+    ports:
+      - "5174:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - ecodeli-network
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  ecodeli-network:
+    driver: bridge

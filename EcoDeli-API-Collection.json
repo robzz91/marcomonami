@@ -1,0 +1,1177 @@
+{
+	"info": {
+		"_postman_id": "ecodeli-api-collection",
+		"name": "EcoDeli API - Collection Complète",
+		"description": "Collection Postman complète pour tester l'API EcoDeli avec tous les endpoints des 5 espaces utilisateurs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000/api",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{auth_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Script global exécuté avant chaque requête",
+					"console.log('Exécution de la requête:', pm.info.requestName);"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Script global exécuté après chaque requête",
+					"pm.test('Status code is 2xx', function () {",
+					"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202, 204]);",
+					"});"
+				]
+			}
+		}
+	],
+	"item": [
+		{
+			"name": "📋 Documentation",
+			"item": [
+				{
+					"name": "API Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/../",
+							"host": ["{{base_url}}"],
+							"path": [".."]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🔐 Authentification",
+			"item": [
+				{
+					"name": "Inscription",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    if (response.data && response.data.utilisateur) {",
+									"        pm.collectionVariables.set('user_id', response.data.utilisateur.id);",
+									"    }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nom\": \"Dupont\",\n    \"prenom\": \"Jean\",\n    \"email\": \"jean.dupont@example.com\",\n    \"mot_de_passe\": \"Password123!\",\n    \"telephone\": \"0123456789\",\n    \"adresse\": \"123 Rue de la Paix, 75001 Paris\",\n    \"role\": \"client\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "register"]
+						}
+					}
+				},
+				{
+					"name": "Connexion",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.data && response.data.token) {",
+									"        pm.collectionVariables.set('auth_token', response.data.token);",
+									"        pm.collectionVariables.set('user_id', response.data.utilisateur.id);",
+									"        console.log('Token saved:', response.data.token);",
+									"    }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"jean.dupont@example.com\",\n    \"mot_de_passe\": \"Password123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Profil utilisateur",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/auth/profile",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "profile"]
+						}
+					}
+				},
+				{
+					"name": "Déconnexion",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/auth/logout",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "logout"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🚚 Espace Livreurs",
+			"item": [
+				{
+					"name": "Profil Livreur",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/livreurs/profile",
+							"host": ["{{base_url}}"],
+							"path": ["livreurs", "profile"]
+						}
+					}
+				},
+				{
+					"name": "Mettre à jour profil",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"vehicule_type\": \"vélo électrique\",\n    \"zone_operation\": \"Paris 1er, 2ème, 3ème arrondissements\",\n    \"est_disponible\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/livreurs/profile",
+							"host": ["{{base_url}}"],
+							"path": ["livreurs", "profile"]
+						}
+					}
+				},
+				{
+					"name": "Statistiques livreur",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/livreurs/stats?periode=30",
+							"host": ["{{base_url}}"],
+							"path": ["livreurs", "stats"],
+							"query": [
+								{
+									"key": "periode",
+									"value": "30"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Créer un trajet",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"point_depart\": \"Gare du Nord\",\n    \"point_arrivee\": \"République\",\n    \"ville_depart\": \"Paris\",\n    \"ville_arrivee\": \"Paris\",\n    \"date_depart\": \"2024-07-01T10:00:00Z\",\n    \"capacite_disponible\": 20.5,\n    \"prix_propose\": 15.00\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/livreurs/trajets",
+							"host": ["{{base_url}}"],
+							"path": ["livreurs", "trajets"]
+						}
+					}
+				},
+				{
+					"name": "Mes trajets",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/livreurs/trajets?page=1&limit=10&statut=actif",
+							"host": ["{{base_url}}"],
+							"path": ["livreurs", "trajets"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "statut",
+									"value": "actif"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Mes livraisons",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/livreurs/livraisons?page=1&limit=10",
+							"host": ["{{base_url}}"],
+							"path": ["livreurs", "livraisons"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Accepter une livraison",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/livreurs/livraisons/1/accepter",
+							"host": ["{{base_url}}"],
+							"path": ["livreurs", "livraisons", "1", "accepter"]
+						}
+					}
+				},
+				{
+					"name": "Confirmer livraison",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code_confirmation\": \"123456\",\n    \"signature\": \"data:image/png;base64,...\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/livreurs/livraisons/1/confirmer",
+							"host": ["{{base_url}}"],
+							"path": ["livreurs", "livraisons", "1", "confirmer"]
+						}
+					}
+				},
+				{
+					"name": "Portefeuille",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/livreurs/wallet",
+							"host": ["{{base_url}}"],
+							"path": ["livreurs", "wallet"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🏪 Espace Commerçants",
+			"item": [
+				{
+					"name": "Profil Commerçant",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/commercants/profile",
+							"host": ["{{base_url}}"],
+							"path": ["commercants", "profile"]
+						}
+					}
+				},
+				{
+					"name": "Statistiques",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/commercants/stats?periode=30",
+							"host": ["{{base_url}}"],
+							"path": ["commercants", "stats"],
+							"query": [
+								{
+									"key": "periode",
+									"value": "30"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Mes contrats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/commercants/contrats",
+							"host": ["{{base_url}}"],
+							"path": ["commercants", "contrats"]
+						}
+					}
+				},
+				{
+					"name": "Contrat actif",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/commercants/contrats/actif",
+							"host": ["{{base_url}}"],
+							"path": ["commercants", "contrats", "actif"]
+						}
+					}
+				},
+				{
+					"name": "Mes factures",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/commercants/factures",
+							"host": ["{{base_url}}"],
+							"path": ["commercants", "factures"]
+						}
+					}
+				},
+				{
+					"name": "Créer une facture",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"montant_total\": 250.00,\n    \"date_echeance\": \"2024-08-01\",\n    \"lignes\": [\n        {\n            \"description\": \"Livraison express - Lot 1\",\n            \"quantite\": 5,\n            \"prix_unitaire\": 30.00\n        },\n        {\n            \"description\": \"Emballage écologique\",\n            \"quantite\": 10,\n            \"prix_unitaire\": 10.00\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/commercants/factures",
+							"host": ["{{base_url}}"],
+							"path": ["commercants", "factures"]
+						}
+					}
+				},
+				{
+					"name": "Vérifier si peut créer annonce",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/commercants/can-create-annonce",
+							"host": ["{{base_url}}"],
+							"path": ["commercants", "can-create-annonce"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "👤 Espace Clients",
+			"item": [
+				{
+					"name": "Profil Client",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/clients/profile",
+							"host": ["{{base_url}}"],
+							"path": ["clients", "profile"]
+						}
+					}
+				},
+				{
+					"name": "Statistiques",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/clients/stats",
+							"host": ["{{base_url}}"],
+							"path": ["clients", "stats"]
+						}
+					}
+				},
+				{
+					"name": "Rechercher services",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/clients/services/search?motCle=ménage&prixMax=50",
+							"host": ["{{base_url}}"],
+							"path": ["clients", "services", "search"],
+							"query": [
+								{
+									"key": "motCle",
+									"value": "ménage"
+								},
+								{
+									"key": "prixMax",
+									"value": "50"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Réserver un service",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"date_prestation\": \"2024-07-15\",\n    \"heure_debut\": \"09:00\",\n    \"heure_fin\": \"12:00\",\n    \"adresse_prestation\": \"123 Avenue des Champs, 75008 Paris\",\n    \"instructions_specifiques\": \"Interphone code 1234\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/clients/services/1/prestataires/1/reserver",
+							"host": ["{{base_url}}"],
+							"path": ["clients", "services", "1", "prestataires", "1", "reserver"]
+						}
+					}
+				},
+				{
+					"name": "Mes prestations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/clients/prestations",
+							"host": ["{{base_url}}"],
+							"path": ["clients", "prestations"]
+						}
+					}
+				},
+				{
+					"name": "Vérifier disponibilité prestataire",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/clients/prestataires/1/disponibilite?date=2024-07-15&heureDebut=09:00&heureFin=12:00",
+							"host": ["{{base_url}}"],
+							"path": ["clients", "prestataires", "1", "disponibilite"],
+							"query": [
+								{
+									"key": "date",
+									"value": "2024-07-15"
+								},
+								{
+									"key": "heureDebut",
+									"value": "09:00"
+								},
+								{
+									"key": "heureFin",
+									"value": "12:00"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Mes paiements",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/clients/paiements",
+							"host": ["{{base_url}}"],
+							"path": ["clients", "paiements"]
+						}
+					}
+				},
+				{
+					"name": "Terminer tutoriel",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"completed\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/clients/tutorial-status",
+							"host": ["{{base_url}}"],
+							"path": ["clients", "tutorial-status"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🔧 Espace Prestataires",
+			"item": [
+				{
+					"name": "Profil Prestataire",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/prestataires/profile",
+							"host": ["{{base_url}}"],
+							"path": ["prestataires", "profile"]
+						}
+					}
+				},
+				{
+					"name": "Statistiques",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/prestataires/stats",
+							"host": ["{{base_url}}"],
+							"path": ["prestataires", "stats"]
+						}
+					}
+				},
+				{
+					"name": "Mes prestations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/prestataires/prestations",
+							"host": ["{{base_url}}"],
+							"path": ["prestataires", "prestations"]
+						}
+					}
+				},
+				{
+					"name": "Accepter une prestation",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/prestataires/prestations/1/accepter",
+							"host": ["{{base_url}}"],
+							"path": ["prestataires", "prestations", "1", "accepter"]
+						}
+					}
+				},
+				{
+					"name": "Terminer une prestation",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"compte_rendu\": \"Prestation réalisée avec succès. Client satisfait.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/prestataires/prestations/1/terminer",
+							"host": ["{{base_url}}"],
+							"path": ["prestataires", "prestations", "1", "terminer"]
+						}
+					}
+				},
+				{
+					"name": "Mes disponibilités",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/prestataires/disponibilites",
+							"host": ["{{base_url}}"],
+							"path": ["prestataires", "disponibilites"]
+						}
+					}
+				},
+				{
+					"name": "Mettre à jour disponibilités",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"disponibilites\": [\n        {\n            \"jour_semaine\": 1,\n            \"heure_debut\": \"08:00\",\n            \"heure_fin\": \"18:00\"\n        },\n        {\n            \"jour_semaine\": 2,\n            \"heure_debut\": \"08:00\",\n            \"heure_fin\": \"18:00\"\n        },\n        {\n            \"jour_semaine\": 3,\n            \"heure_debut\": \"08:00\",\n            \"heure_fin\": \"18:00\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/prestataires/disponibilites",
+							"host": ["{{base_url}}"],
+							"path": ["prestataires", "disponibilites"]
+						}
+					}
+				},
+				{
+					"name": "Ajouter indisponibilité",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"date_debut\": \"2024-07-20T00:00:00Z\",\n    \"date_fin\": \"2024-07-25T23:59:59Z\",\n    \"motif\": \"Congés d'été\",\n    \"type_indisponibilite\": \"conges\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/prestataires/indisponibilites",
+							"host": ["{{base_url}}"],
+							"path": ["prestataires", "indisponibilites"]
+						}
+					}
+				},
+				{
+					"name": "Mes compétences",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/prestataires/competences",
+							"host": ["{{base_url}}"],
+							"path": ["prestataires", "competences"]
+						}
+					}
+				},
+				{
+					"name": "Mes évaluations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/prestataires/evaluations",
+							"host": ["{{base_url}}"],
+							"path": ["prestataires", "evaluations"]
+						}
+					}
+				},
+				{
+					"name": "Générer facture mensuelle",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"mois\": 6,\n    \"annee\": 2024\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/prestataires/factures/generer-mensuelle",
+							"host": ["{{base_url}}"],
+							"path": ["prestataires", "factures", "generer-mensuelle"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🎛️ Back Office Admin",
+			"item": [
+				{
+					"name": "Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/dashboard?periode=30",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "dashboard"],
+							"query": [
+								{
+									"key": "periode",
+									"value": "30"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Tous les utilisateurs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users?page=1&limit=20&search=dupont",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "users"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "search",
+									"value": "dupont"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Détails utilisateur",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users/{{user_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "users", "{{user_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Documents à valider",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/validation/documents",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "validation", "documents"]
+						}
+					}
+				},
+				{
+					"name": "Valider documents livreur",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"statut\": \"valide\",\n    \"commentaire\": \"Documents conformes et valides\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/validation/livreurs/1",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "validation", "livreurs", "1"]
+						}
+					}
+				},
+				{
+					"name": "Rapport financier",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/reports/financial?dateDebut=2024-06-01&dateFin=2024-06-30&type=livraisons",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "reports", "financial"],
+							"query": [
+								{
+									"key": "dateDebut",
+									"value": "2024-06-01"
+								},
+								{
+									"key": "dateFin",
+									"value": "2024-06-30"
+								},
+								{
+									"key": "type",
+									"value": "livraisons"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Annonces à modérer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/moderation/annonces",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "moderation", "annonces"]
+						}
+					}
+				},
+				{
+					"name": "Modérer une annonce",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"action\": \"approuver\",\n    \"motif\": \"Annonce conforme aux conditions d'utilisation\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/moderation/annonces/1",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "moderation", "annonces", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📦 Livraisons",
+			"item": [
+				{
+					"name": "Créer livraison depuis annonce",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"livreurId\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/livraisons/from-annonce/1",
+							"host": ["{{base_url}}"],
+							"path": ["livraisons", "from-annonce", "1"]
+						}
+					}
+				},
+				{
+					"name": "Suivi d'une livraison",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/livraisons/1/tracking",
+							"host": ["{{base_url}}"],
+							"path": ["livraisons", "1", "tracking"]
+						}
+					}
+				},
+				{
+					"name": "Livraisons disponibles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/livraisons/available/for-livreurs?zone=Paris&date=2024-07-01",
+							"host": ["{{base_url}}"],
+							"path": ["livraisons", "available", "for-livreurs"],
+							"query": [
+								{
+									"key": "zone",
+									"value": "Paris"
+								},
+								{
+									"key": "date",
+									"value": "2024-07-01"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Ajouter événement de suivi",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"statut\": \"en_route\",\n    \"description\": \"Le livreur est en route vers l'adresse de livraison\",\n    \"latitude\": 48.8566,\n    \"longitude\": 2.3522\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/livraisons/1/tracking",
+							"host": ["{{base_url}}"],
+							"path": ["livraisons", "1", "tracking"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🛍️ Services",
+			"item": [
+				{
+					"name": "Catégories de services",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/services/categories",
+							"host": ["{{base_url}}"],
+							"path": ["services", "categories"]
+						}
+					}
+				},
+				{
+					"name": "Tous les services",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/services?page=1&limit=20&motCle=ménage&prixMax=100",
+							"host": ["{{base_url}}"],
+							"path": ["services"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "motCle",
+									"value": "ménage"
+								},
+								{
+									"key": "prixMax",
+									"value": "100"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Détails d'un service",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/services/1",
+							"host": ["{{base_url}}"],
+							"path": ["services", "1"]
+						}
+					}
+				},
+				{
+					"name": "Prestataires disponibles pour un service",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/services/1/prestataires/disponibles?date=2024-07-15&heure_debut=09:00&heure_fin=12:00&zone=Paris",
+							"host": ["{{base_url}}"],
+							"path": ["services", "1", "prestataires", "disponibles"],
+							"query": [
+								{
+									"key": "date",
+									"value": "2024-07-15"
+								},
+								{
+									"key": "heure_debut",
+									"value": "09:00"
+								},
+								{
+									"key": "heure_fin",
+									"value": "12:00"
+								},
+								{
+									"key": "zone",
+									"value": "Paris"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📝 Annonces & Messages",
+			"item": [
+				{
+					"name": "Catégories d'annonces",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/annonces/categories",
+							"host": ["{{base_url}}"],
+							"path": ["annonces", "categories"]
+						}
+					}
+				},
+				{
+					"name": "Créer une annonce",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"titre\": \"Livraison urgente - Gare du Nord vers République\",\n    \"description\": \"Besoin de livrer un colis urgent de 5kg\",\n    \"categorie_id\": 1,\n    \"adresse_depart\": \"Gare du Nord, 75010 Paris\",\n    \"adresse_arrivee\": \"Place de la République, 75003 Paris\",\n    \"ville_depart\": \"Paris\",\n    \"ville_arrivee\": \"Paris\",\n    \"date_livraison_souhaitee\": \"2024-07-01T14:00:00Z\",\n    \"prix_propose\": 25.00,\n    \"poids\": 5.0,\n    \"dimensions\": \"30x20x15 cm\",\n    \"type_createur\": \"client\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/annonces",
+							"host": ["{{base_url}}"],
+							"path": ["annonces"]
+						}
+					}
+				},
+				{
+					"name": "Mes annonces",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/annonces/user/me",
+							"host": ["{{base_url}}"],
+							"path": ["annonces", "user", "me"]
+						}
+					}
+				},
+				{
+					"name": "Mes conversations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/messages/conversations",
+							"host": ["{{base_url}}"],
+							"path": ["messages", "conversations"]
+						}
+					}
+				},
+				{
+					"name": "Envoyer un message",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"destinataire_id\": 2,\n    \"contenu\": \"Bonjour, je suis intéressé par votre annonce de livraison.\",\n    \"annonce_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/messages/send",
+							"host": ["{{base_url}}"],
+							"path": ["messages", "send"]
+						}
+					}
+				}
+			]
+		}
+	]
+}
